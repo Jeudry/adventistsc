@@ -11,6 +11,7 @@ adventist:
   web-socket:
     allowedOrigins:
       - "http://localhost:8080"
+      - "http://adventist.strangled.net"
   email:
     url: "https://adventist.adventist.com"
   ip:
