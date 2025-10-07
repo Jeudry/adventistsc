@@ -1,0 +1,18 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+jwt:
+  expiration_minutes: 15
+nginx:
+  require-proxy: true
+
+adventist:
+  web-socket:
+    allowedOrigins:
+      - "http://localhost:8080"
+  email:
+    url: "https://adventist.adventist.com"
+  ip:
+    rate-limit:
+      apply-limit: true
