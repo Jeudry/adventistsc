@@ -56,3 +56,7 @@ app/build/
 
 # Ignorar carpetas de Gradle
 .gradle/
+
+# Excepciones para que gradle-wrapper.properties y gradle-wrapper.jar no sean ignorados
+!gradle/wrapper/gradle-wrapper.properties
+!gradle/wrapper/gradle-wrapper.jar
