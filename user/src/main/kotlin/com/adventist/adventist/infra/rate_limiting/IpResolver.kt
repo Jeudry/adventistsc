@@ -3,7 +3,6 @@ package com.adventist.adventist.infra.rate_limiting
 import com.adventist.adventist.infra.configs.NginxConfig
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.LoggerFactory
-import org.springframework.aot.hint.TypeReference.listOf
 import org.springframework.security.web.util.matcher.IpAddressMatcher
 import org.springframework.stereotype.Component
 import java.net.Inet4Address
@@ -47,6 +46,7 @@ class IpResolver(
 
     fun getClientIp(request: HttpServletRequest): String {
         val remoteAddr = request.remoteAddr
+        logger.warn("Remote address: $remoteAddr")
         if(!isTrustedIp(remoteAddr)){
             if(nginxConfig.requireProxy){
                 logger.warn("Direct connection attempt from $remoteAddr")
