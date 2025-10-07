@@ -103,4 +103,4 @@ firebase:
   credentials-path: "classpath:firebase-credentials/adventist-firebase-adminsdk.json"
   
 server:
-  port: 8095
+  port: 8080
