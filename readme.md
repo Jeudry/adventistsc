@@ -6,3 +6,5 @@ sudo systemctl status adventist.service
 
 ### To see logs
 sudo journalctl -u adventist.service -f 
+
+text
