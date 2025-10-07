@@ -46,11 +46,10 @@ class IpResolver(
 
     fun getClientIp(request: HttpServletRequest): String {
         val remoteAddr = request.remoteAddr
-        logger.warn("Remote address: $remoteAddr")
         if(!isTrustedIp(remoteAddr)){
             if(nginxConfig.requireProxy){
                 logger.warn("Direct connection attempt from $remoteAddr")
-                throw SecurityException("Not valid client IP in proxy headers")
+                throw SecurityException("Not valid client IP in proxy headers, $remoteAddr")
             }
 
             return remoteAddr
