@@ -49,7 +49,7 @@ class IpResolver(
         if(!isTrustedIp(remoteAddr)){
             if(nginxConfig.requireProxy){
                 logger.warn("Direct connection attempt from $remoteAddr")
-                throw SecurityException("Not valid client IP in proxy headers, $remoteAddr")
+                throw SecurityException("Not valid client IP in proxy headers")
             }
 
             return remoteAddr

@@ -6,6 +6,13 @@ jwt:
   expiration_minutes: 15
 nginx:
   require-proxy: true
+  trustedIps:
+    - "178.156.204.95"
+    - "152.167.110.92"
+    - "127.0.0.1"
+    - "::1"
+    - "172.17.0.0/16"
+    - "10.0.0.5/32"
 
 adventist:
   web-socket:

@@ -91,6 +91,7 @@ adventist:
 nginx:
   trustedIps:
     - "178.156.204.95"
+    - "152.167.110.92"
     - "127.0.0.1" #nginx from same machine
     - "::1" #IPV6 localhost
     - "172.17.0.0/16" #nginx container ips when using docker
