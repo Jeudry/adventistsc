@@ -21,6 +21,7 @@ import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 @Service
 class ChatMessageService(
@@ -29,6 +30,7 @@ class ChatMessageService(
     private val chatMessageRepository: ChatMessageRepository,
     private val applicationEventPublisher: ApplicationEventPublisher,
     private val eventPublisher: EventPublisher,
+    private val messageCacheEvictionHelper: MessageCacheEvictionHelper
 ) {
     @Transactional
     @CacheEvict(
@@ -50,7 +52,7 @@ class ChatMessageService(
 
         val savedMessage = chatMessageRepository.save(
             ChatMessageEntity(
-                id = messageId,
+                id = messageId ?: UUID.randomUUID(),
                 chat = chat,
                 sender = sender,
                 content = content,
@@ -94,15 +96,6 @@ class ChatMessageService(
             )
         )
 
-        evictMessagesCache(message.chatId!!)
-    }
-
-    @CacheEvict(
-        value = ["messages"],
-        key = "#chatId",
-    )
-    fun evictMessagesCache(chatId: ChatId){
-        // NO-OP: Let spring handle cache eviction
-
+        messageCacheEvictionHelper.evictMessagesCache(message.chatId!!)
     }
 }

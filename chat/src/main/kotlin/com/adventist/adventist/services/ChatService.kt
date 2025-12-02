@@ -2,6 +2,7 @@ package com.adventist.adventist.services
 
 import com.adventist.adventist.api.dto.ChatMessageDto
 import com.adventist.adventist.api.mappers.toDto
+import com.adventist.adventist.domain.events.ChatCreatedEvent
 import com.adventist.adventist.domain.events.ChatParticipantLeftEvent
 import com.adventist.adventist.domain.events.ChatParticipantsJoinedEvent
 import com.adventist.adventist.domain.exceptions.*
@@ -93,12 +94,19 @@ class ChatService(
         val creator = chatParticipantRepository.findByIdOrNull(creatorId)
             ?: throw ChatParticipantNotFoundEx(creatorId)
 
-        return chatRepository.save(
+        return chatRepository.saveAndFlush(
             ChatEntity(
                 creator = creator,
                 participants = setOf(creator) + otherParticipants
             )
-        ).toModel()
+        ).toModel().also { entity ->
+          applicationEventPublisher.publishEvent(
+            ChatCreatedEvent(
+                    chatId = entity.id!!,
+                    participantIds = entity.participants.map { it.userId }
+                )
+            )
+        }
     }
 
     @Transactional

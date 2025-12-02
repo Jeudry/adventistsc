@@ -22,7 +22,7 @@ class ChatMessageEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     var id: ChatMessageId? = null,
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     var content: String = "",
     @Column(name = "chat_id", nullable = false, updatable = false)
     var chatId: ChatId? = null,

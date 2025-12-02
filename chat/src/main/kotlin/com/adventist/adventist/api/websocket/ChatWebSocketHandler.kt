@@ -2,10 +2,7 @@ package com.adventist.adventist.api.websocket
 
 import com.adventist.adventist.api.dto.ws.*
 import com.adventist.adventist.api.mappers.toDto
-import com.adventist.adventist.domain.events.ChatParticipantLeftEvent
-import com.adventist.adventist.domain.events.ChatParticipantsJoinedEvent
-import com.adventist.adventist.domain.events.MessageDeletedEvent
-import com.adventist.adventist.domain.events.ProfilePictureUpdatedEv
+import com.adventist.adventist.domain.events.*
 import com.adventist.adventist.domain.types.ChatId
 import com.adventist.adventist.domain.types.UserId
 import com.adventist.adventist.services.ChatMessageService
@@ -197,18 +194,19 @@ class ChatWebSocketHandler(
     )
   }
   
-  @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-  fun onJoinChat(event: ChatParticipantsJoinedEvent){
+  private fun updateChatForUsers(
+    chatId: ChatId,
+    userIds: List<UserId>
+  ){
     connectionLock.write {
-      event.usersId.forEach { userId ->
+      userIds.forEach { userId ->
         userChatIds.compute(userId) { _, existingChatIds ->
           (existingChatIds ?: mutableSetOf()).apply {
-            add(event.chatId)
+            add(chatId)
           }
         }
-        
         userToSessions[userId]?.forEach { session ->
-          chatToSessions.compute(event.chatId) { _, existingSessions ->
+          chatToSessions.compute(chatId) { _, existingSessions ->
             (existingSessions ?: mutableSetOf()).apply {
               add(session)
             }
@@ -216,6 +214,22 @@ class ChatWebSocketHandler(
         }
       }
     }
+  }
+  
+  @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+  fun onChatCreated(event: ChatCreatedEvent){
+    updateChatForUsers(
+      chatId = event.chatId,
+      userIds = event.participantIds
+    )
+  }
+  
+  @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+  fun onJoinChat(event: ChatParticipantsJoinedEvent){
+    updateChatForUsers(
+      chatId = event.chatId,
+      userIds = event.usersId.toList()
+    )
     
     broadcastToChat(
       chatId = event.chatId,

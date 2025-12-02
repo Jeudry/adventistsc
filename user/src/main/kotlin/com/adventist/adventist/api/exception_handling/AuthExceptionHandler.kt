@@ -1,7 +1,7 @@
 package com.adventist.adventist.api.exception_handling
 
-import com.adventist.adventist.domain.exceptions.InvalidTokenEx
 import com.adventist.adventist.domain.exception.*
+import com.adventist.adventist.domain.exceptions.InvalidTokenEx
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -49,7 +49,7 @@ class AuthExceptionHandler {
     )
 
     @ExceptionHandler(EmailNotVerifiedEx::class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     fun onEmailNotVerified(
         e: EmailNotVerifiedEx
     ) = mapOf(
